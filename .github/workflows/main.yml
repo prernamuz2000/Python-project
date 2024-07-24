@@ -21,7 +21,7 @@ jobs:
 
       - name: Log in to Amazon ECR
         run: |
-          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com
+          aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 701251269124.dkr.ecr.ap-south-1.amazonaws.com/nginx-repro
 
       - name: Build Docker image
         run: |
@@ -29,8 +29,8 @@ jobs:
 
       - name: Tag Docker image
         run: |
-          docker tag my-ncr:latest ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/nginx-repro:latest
+          docker tag my-ncr:latest 701251269124.dkr.ecr.ap-south-1.amazonaws.com/nginx-repro:latest
 
       - name: Push Docker image to ECR
         run: |
-          docker push ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.ap-south-1.amazonaws.com/nginx-repro:latest
+          docker push 701251269124.dkr.ecr.ap-south-1.amazonaws.com/nginx-repro:latest
