@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "my-nginx-image"
-        DOCKER_REGISTRY = "701251269124.dkr.ecr.ap-northeast-1.amazonaws.com/nginx-repro2"
+        DOCKER_REGISTRY = "a1.dkr.ecr.ap-northeast-1.amazonaws.com/nginx-repro2"
         DOCKER_CREDENTIALS_ID = "08b499ab-e92b-49f3-ac96-36dce6765382"
     }
 
