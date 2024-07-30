@@ -2,20 +2,10 @@ pipeline {
     agent any
 
     environment {
-        GLOBAL_VAR = 'my-globalvariable'
         ECR_REPO = 'nginx-repro2'
         IMAGE_NAME = 'nginx'
         AWS_REGION = 'ap-northeast-1'
-    }
-
-    stages {
-        stage('Build') {
-            steps {
-                script {
-                    echo " ${GLOBAL_VAR}"
-                }
-            }
-        }
+        AWS_ACCOUNT_ID = '701251269124'
     }
 
     stages {
@@ -40,7 +30,7 @@ pipeline {
                 script {
                     // Login to AWS ECR
                     sh """
-                        $(aws ecr get-login-password --region $ap-northeast-1 | docker login --username AWS --password-stdin $GLOBAL_VAR.dkr.ecr.ap-northeast-1.amazonaws.com)
+                        aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
                     """
                 }
             }
