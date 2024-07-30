@@ -12,7 +12,7 @@ pipeline {
         stage('Build') {
             steps {
                 script {
-                    echo " ${env.GLOBAL_VAR}"
+                    echo " ${GLOBAL_VAR}"
                 }
             }
         }
