@@ -2,11 +2,23 @@ pipeline {
     agent any
 
     environment {
-        MY_VAR = 'my_value'
-        AWS_REGION = 'ap-northeast-1' 
-        ECR_REPO_NAME = 'nginx-repro2' 
-        IMAGE_NAME = 'nginx' 
+         ECR_REPO_URL = ''
     }
+    stages {
+        stage('Set ECR URL') {
+            steps {
+                script {
+                    // Construct the ECR URL dynamically
+                    def accountId = '701251269124'  // Replace with your AWS account ID
+                    def region = 'ap-northeast-1'  // Replace with your AWS region
+                    def repoName = 'nginx-repro2'  // Replace with your repository name
+
+                    // Set the ECR URL
+                    env.ECR_REPO_URL = "${accountId}.dkr.ecr.${region}.amazonaws.com/${repoName}"
+                }
+            }
+        }
+    
  stages {
         stage('Clone Repository') {
             steps {
