@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        ECR_REPO = 'nginx-repro2'
+        GLOBAL_VAR = 'my-globalvariable'
         IMAGE_NAME = 'nginx'
         AWS_REGION = 'ap-northeast-1'
         AWS_ACCOUNT_ID = '701251269124'
