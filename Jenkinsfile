@@ -3,55 +3,40 @@ pipeline {
 
     environment {
         MY_VAR = 'my_value'
-        AWS_REGION = 'ap-northeast-1' // Update with your AWS region
-        ECR_REPO_NAME = 'nginx-repro2' // Update with your ECR repository name
-        IMAGE_NAME = 'nginx' // Update with your Docker image name
+        AWS_REGION = 'ap-northeast-1' 
+        ECR_REPO_NAME = 'nginx-repro2' 
+        IMAGE_NAME = 'nginx' 
     }
-
-    stages {
-        stage('Checkout') {
+ stages {
+        stage('Clone Repository') {
             steps {
-                // Checkout the code from the repository
-                checkout scm
-            }
-        }
-        stage('Login to AWS ECR') {
-            steps {
-                script {
-                    // Configure AWS CLI with your credentials
-                    sh '''
-                    aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query Account --output text).dkr.ecr.$AWS_REGION.amazonaws.com
-                    '''
-                }
+                git 'https://github.com/prernamuz2000/Python-project.git'
             }
         }
         stage('Build Docker Image') {
             steps {
                 script {
-                    // Build the Docker image
-                    sh 'docker build -t $IMAGE_NAME .'
+                    docker.build("${DOCKER_IMAGE}")
                 }
             }
         }
-        stage('Tag Docker Image') {
+        stage('Push Docker Image') {
             steps {
                 script {
-                    // Tag the Docker image for ECR
-                    sh '''
-                    REPO_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO_NAME --query "repositories[0].repositoryUri" --output text)
-                    docker tag $IMAGE_NAME:latest $REPO_URI:latest
-                    '''
+                    docker.withRegistry("${DOCKER_REGISTRY}", "${DOCKER_CREDENTIALS_ID}") {
+                        docker.image("${DOCKER_IMAGE}").push("latest")
+                    }
                 }
             }
         }
-        stage('Push Docker Image to ECR') {
+        stage('Deploy') {
             steps {
                 script {
-                    // Push the Docker image to ECR
                     sh '''
-                    REPO_URI=$(aws ecr describe-repositories --repository-names $ECR_REPO_NAME --query "repositories[0].repositoryUri" --output text)
-                    docker push $REPO_URI:latest
+                    docker pull ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
+                    docker run -d -p 80:80 ${DOCKER_REGISTRY}/${DOCKER_IMAGE}:latest
                     '''
+
                 }
             }
         }
