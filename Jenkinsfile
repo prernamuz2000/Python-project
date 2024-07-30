@@ -2,15 +2,15 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = "my-nginx-image"
-        DOCKER_REGISTRY = "a1.dkr.ecr.ap-northeast-1.amazonaws.com/nginx-repro2"
-        DOCKER_CREDENTIALS_ID = "08b499ab-e92b-49f3-ac96-36dce6765382"
+        DOCKER_IMAGE = "nginx"
+        DOCKER_REGISTRY = "${DOCKER_REGISTRY}"
+        DOCKER_CREDENTIALS_ID = "${DOCKER_CREDENTIALS_ID}"
     }
 
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/prernamuz2000/nginx-web-app.git'
+                git 'https://github.com/prernamuz2000/Python-project.git'
             }
         }
         stage('Build Docker Image') {
