@@ -5,7 +5,7 @@ pipeline {
         GLOBAL_VAR = 'my-globalvariable'
         IMAGE_NAME = 'nginx'
         AWS_REGION = 'ap-northeast-1'
-        AWS_ACCOUNT_ID = '701251269124'
+        AWS_ACCOUNT_ID = 701251269124
     }
 
     stages {
@@ -30,7 +30,7 @@ pipeline {
                 script {
                     // Login to AWS ECR
                     sh """
-                        aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 701251269124.dkr.ecr.ap-northeast-1.amazonaws.com/nginx-repro2
+                        aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 701251269124.dkr.ecr.ap-northeast-1.amazonaws.com/my-nginx
                     """
                 }
             }
