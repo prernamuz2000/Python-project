@@ -20,7 +20,13 @@ pipeline {
             steps {
                 script {
                     // Build Docker image
-                    sh "docker build -t ${IMAGE_NAME}:latest ."
+                    sh 'aws ecr get-login-password --region ap-northeast-1 | docker login --username AWS --password-stdin 701251269124.dkr.ecr.ap-northeast-1.amazonaws.com'
+                    
+                    // Build your Docker image
+                    sh 'docker build -t 701251269124.dkr.ecr.ap-northeast-1.amazonaws.com/my-nginx:latest .'
+                    
+                    // Push the Docker image to ECR
+                    sh 'docker push 701251269124.dkr.ecr.ap-northeast-1.amazonaws.com/my-nginx:latest'
                 }
             }
         }
