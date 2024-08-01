@@ -4,44 +4,39 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Your build steps here
                 echo 'Building...'
+                // Add your build steps here
             }
         }
         stage('Test') {
             steps {
-                // Your test steps here
                 echo 'Testing...'
+                // Add your test steps here
             }
         }
         stage('Deploy') {
             steps {
-                // Your deploy steps here
                 echo 'Deploying...'
+                // Add your deploy steps here
             }
         }
     }
 
     post {
-        success {
+        always {
             emailext (
-                to: 'prerna.muz2000@gmail.com',
-                subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """
-                <p>Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.</p>
-                <p>Check console output at ${env.BUILD_URL} to view the results.</p>
-                """
+                subject: "Job '${env.JOB_NAME}' (${env.BUILD_NUMBER}) - ${currentBuild.currentResult}",
+                body: """<p>Job '${env.JOB_NAME}' (${env.BUILD_NUMBER}) - ${currentBuild.currentResult}</p>
+                         <p>Check console output at <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']],
+                to: 'prerna.muz2000@gmail.com'
             )
         }
+        success {
+            echo 'Build was successful!'
+        }
         failure {
-            emailext (
-                to: 'prerna.muz2000@gmail.com',
-                subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
-                body: """
-                <p>Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.</p>
-                <p>Check console output at ${env.BUILD_URL} to view the results.</p>
-                """
-            )
+            echo 'Build failed!'
         }
     }
 }
