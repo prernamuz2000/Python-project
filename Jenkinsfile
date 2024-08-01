@@ -1,21 +1,37 @@
 pipeline {
     agent any
-    stages {
-        stage('Checkout') {
-            // Checkout code
-        }
-        stage('Build') {
-            // Build code
-        }
-        // Other stages (test, deploy, etc.)
+    parameters {
+        string(
+            name: 'email', 
+            defaultValue: 'prerna.muz2000@gmail.com', 
+            description: 'Email address to send notification' )
     }
+    stages{
+          stage("Test-Stage")
+                { 
+                  steps {
+                    echo "This is the test stage for Testing Jenkins Job notification"
+                    exit 1
+                    }
+                  }
+          }
+
     post {
-        failure {
-            emailext (
-                to: 'prerna.muz2000@gmail.com',
-                subject: 'Build Failed!',
-                body: 'The pipeline at Jenkins has failed. Please check it out. Thanks!'
-            )
-        }
+            failure {
+                emailext(
+                    subject: "${JOB_NAME}.${BUILD_NUMBER} FAILED",
+                    mimeType: 'text/html',
+                    to: "prerna.muz2000@gmail.com",
+                    body: "${JOB_NAME}.${BUILD_NUMBER} FAILED"
+                )
+            }
+            success {
+                emailext(
+                    subject: "${JOB_NAME}.${BUILD_NUMBER} PASSED",
+                    mimeType: 'text/html',
+                    to: "prerna.muz2000@gmail.com",
+                    body: "${JOB_NAME}.${BUILD_NUMBER} PASSED"
+                )
+            }
     }
 }
