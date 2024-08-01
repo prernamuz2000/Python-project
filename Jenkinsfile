@@ -1,45 +1,32 @@
 pipeline {
-    agent {
-        label 'agent-via-ssh'
-    }
-    environment {
-        compose_service_name = "react-jenkins-docker"
-    }
+    agent any
+
     stages {
-        stage('Checkout Source') {
+        stage('Build') {
             steps {
-                ws("${workspace}") {
-                    checkout scm
-                }
+                echo 'Building...'
             }
         }
-        stage('Docker Comopse Build') {
+        stage('Test') {
             steps {
-                ws("${workspace}"){
-                    sh "docker compose build --no-cache ${compose_service_name}"
-                }
+                echo 'Testing...'
             }
         }
-        stage('Docker Comopse Up') {
+        stage('Deploy') {
             steps {
-                ws("${workspace}"){
-                    sh "docker compose up --no-deps -d ${compose_service_name}"
-                }
+                echo 'Deploying...'
             }
         }
     }
+
     post {
-        success {
-            emailext body: "Build ${currentBuild.fullDisplayName} succeeded",
-                        subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - Successful",
-                        to: 'prerna.muz2000@gmail.com',
-                        attachLog: true
-        }
-        failure {
-            emailext body: "Build ${currentBuild.fullDisplayName} failed",
-                        subject: "${env.JOB_NAME} - Build #${env.BUILD_NUMBER} - Failed",
-                        to: 'prerna.muz2000@gmail.com',
-                        attachLog: true
-        }
-    }
+       always {
+          mail (
+              to: 'prerna.muz2000@gmail.com',
+              subject: "Build ${currentBuild.fullDisplayName} completed",
+              body: "Build ${currentBuild.fullDisplayName} completed. Check console output at ${env.BUILD_URL}"
+          )
+      }
+  }
+
 }
