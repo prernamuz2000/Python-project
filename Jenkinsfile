@@ -4,14 +4,20 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Add your build steps here
-                sh 'echo "Building..."'
+                // Your build steps here
+                echo 'Building...'
             }
         }
         stage('Test') {
             steps {
-                // Add your test steps here
-                sh 'echo "Testing..."'
+                // Your test steps here
+                echo 'Testing...'
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Your deploy steps here
+                echo 'Deploying...'
             }
         }
     }
@@ -19,26 +25,22 @@ pipeline {
     post {
         success {
             emailext (
-                subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) - Success",
+                to: 'prerna.muz2000@gmail.com',
+                subject: "SUCCESS: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: """
-                <p>Build and Test Stages completed successfully.</p>
-                <p>Job: ${env.JOB_NAME} [${env.BUILD_NUMBER}]</p>
-                <p>URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """,
-                mimeType: 'text/html',
-                to: 'prerna.muz2000@gmail.com'
+                <p>Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' succeeded.</p>
+                <p>Check console output at ${env.BUILD_URL} to view the results.</p>
+                """
             )
         }
         failure {
             emailext (
-                subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL}) - Failed",
+                to: 'prerna.muz2000@gmail.com',
+                subject: "FAILURE: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]'",
                 body: """
-                <p>Build and/or Test Stages failed.</p>
-                <p>Job: ${env.JOB_NAME} [${env.BUILD_NUMBER}]</p>
-                <p>URL: <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                """,
-                mimeType: 'text/html',
-                to: 'prerna.muz2000@gmail.com'
+                <p>Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' failed.</p>
+                <p>Check console output at ${env.BUILD_URL} to view the results.</p>
+                """
             )
         }
     }
