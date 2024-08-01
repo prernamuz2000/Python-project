@@ -39,8 +39,8 @@ jobs:
         to: prerna.muz2000@gmail.com
         from: ${{ secrets.MAIL_USERNAME }}
 
-    - name: Send notification on Alert
-      if: Alert()
+    - name: Send notification on failure
+      if: failure()
       uses: dawidd6/action-send-mail@v3
       with:
         server_address: prerna.muz2000@gmail.com
