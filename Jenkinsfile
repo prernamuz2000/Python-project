@@ -1,38 +1,33 @@
 pipeline {
     agent any
 
-    environment {
-        EMAIL_RECIPIENT = 'prerna.muz2000@gmail.com'
-    }
-
     stages {
         stage('Build') {
             steps {
-                // Your build steps go here
-                script {
-                    try {
-                        echo 'Building...'
-                        // Simulate build step
-                        sh 'exit 1' // Simulating failure
-                    } catch (Exception e) {
-                        currentBuild.result = 'ALERT'
-                        throw e
-                    }
-                }
+                // Your build steps
+            }
+        }
+        stage('Test') {
+            steps {
+                // Your test steps
             }
         }
     }
 
     post {
-        failure {
-            emailext(
-                subject: "Pipeline ${env.JOB_NAME} - Build # ${env.BUILD_NUMBER} - ${currentBuild.result}",
-                body: "Build failed. Please check Jenkins for details.\n\nBuild URL: ${env.BUILD_URL}",
-                to: "${EMAIL_RECIPIENT}"
+        success {
+            emailext (
+                subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
+                body: "The Pipeline '${env.JOB_NAME}' (${env.BUILD_URL}) completed successfully.",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
             )
         }
-        success {
-            echo 'Pipeline succeeded!'
+        failure {
+            emailext (
+                subject: "Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
+                body: "The Pipeline '${env.JOB_NAME}' (${env.BUILD_URL}) failed.",
+                recipientProviders: [[$class: 'DevelopersRecipientProvider']]
+            )
         }
     }
 }
